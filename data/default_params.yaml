@@ -1,0 +1,47 @@
+# Default Ecosystem Parameters
+# Based on leafcutter ant colony research
+
+# Grid Configuration
+grid_size: 20
+simulation_steps: 100
+animation_speed: 0.2
+
+# Initial Populations
+initial_ants: 30
+initial_plants: 40
+initial_fungi: 10
+initial_parasites: 5
+initial_predators: 3
+
+# Ecological Parameters
+plant_regeneration:
+  interval: 5  # steps between regeneration attempts
+  probability: 0.3  # chance of new plant per attempt
+  max_plants: 60  # maximum plants on grid
+
+reproduction:
+  food_threshold: 15  # fungi needed for reproduction
+  larvae_period: 10  # steps between reproduction attempts
+  larvae_per_cycle: 1  # new ants per successful reproduction
+
+climate:
+  cycle_length: 25  # steps between climate changes
+  rain_duration: 10  # steps of rainy weather
+  dry_duration: 15  # steps of dry weather
+  rain_effects:
+    plant_regen_multiplier: 2.0
+    predator_spawn_reduction: 0.5
+  dry_effects:
+    plant_regen_multiplier: 0.3
+    predator_spawn_increase: 1.5
+
+# Predator-Prey Balance
+predator_balance:
+  target_ant_predator_ratio: 10.0  # optimal ants per predator
+  spawn_adjustment_rate: 0.1  # how quickly to adjust spawn rates
+  base_spawn_chance: 0.05  # baseline predator spawn probability
+
+# Parasite Dynamics
+parasite_dynamics:
+  spread_chance: 0.05  # probability of new parasite per step
+  infection_radius: 1  # distance for parasite effects 
