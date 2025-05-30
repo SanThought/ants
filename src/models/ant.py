@@ -83,6 +83,21 @@ class Ant(Entity):
             plant.deactivate()
             environment.add_fungus(self.position)
     
+    def consume_fungus(self, fungus) -> float:
+        """Consume nutrition from a fungus garden.
+        
+        Args:
+            fungus: The fungus to consume from
+            
+        Returns:
+            Amount of nutrition consumed
+        """
+        if fungus.can_be_consumed():
+            consumed = fungus.consume(5.0)  # Consume up to 5 units of nutrition
+            self.energy += consumed
+            return consumed
+        return 0.0
+    
     def __repr__(self) -> str:
         """String representation of ant."""
         return (f"Ant(position={self.position}, active={self.active}, "

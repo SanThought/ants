@@ -1,6 +1,6 @@
-"""Environment management for the leafcutter colony simulation."""
+"""Environment implementation for the ant colony simulation."""
 
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Optional
 import random
 from src.config import SimulationConfig
 from src.models import (
@@ -320,4 +320,34 @@ class Environment:
             'fungi': len(self.fungi),
             'parasites': len(self.parasites),
             'predators': len(self.predators)
-        } 
+        }
+    
+    def get_nearby_entities(self, position: Tuple[int, int], entity_type: str, radius: int) -> List[Entity]:
+        """Get all entities of a specific type within a radius of a position.
+        
+        Args:
+            position: Center position (x, y)
+            entity_type: Type of entity to look for ('ant', 'plant', 'fungus', 'parasite', 'predator')
+            radius: Search radius in grid cells
+            
+        Returns:
+            List of entities within the radius
+        """
+        x, y = position
+        nearby = []
+        
+        # Get the correct entity list based on type
+        entity_list = getattr(self, f"{entity_type}s", [])  # Note the plural form
+        
+        for entity in entity_list:
+            if not entity.active:
+                continue
+                
+            ex, ey = entity.position
+            # Calculate Manhattan distance (simpler than Euclidean)
+            distance = abs(ex - x) + abs(ey - y)
+            
+            if distance <= radius:
+                nearby.append(entity)
+                
+        return nearby 

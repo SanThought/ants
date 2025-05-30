@@ -31,8 +31,10 @@ climate:
   rain_effects:
     plant_regen_multiplier: 2.0
     predator_spawn_reduction: 0.5
+    predator_spawn_increase: 1.0
   dry_effects:
     plant_regen_multiplier: 0.3
+    predator_spawn_reduction: 1.0
     predator_spawn_increase: 1.5
 
 # Predator-Prey Balance

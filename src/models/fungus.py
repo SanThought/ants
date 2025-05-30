@@ -2,6 +2,7 @@
 
 from typing import Tuple, TYPE_CHECKING
 from .entity import Entity, TILE_FUNGUS
+import random
 
 if TYPE_CHECKING:
     from ..environment import Environment
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 class Fungus(Entity):
     """Represents a fungus food source grown from harvested plants."""
     
-    def __init__(self, position: Tuple[int, int], nutrition_value: int = 10):
+    def __init__(self, position: Tuple[int, int], nutrition_value: float = 10.0):
         """Initialize fungus at given position.
         
         Args:
@@ -21,6 +22,7 @@ class Fungus(Entity):
         self.nutrition_value = nutrition_value
         self.age = 0  # How long the fungus has existed
         self.max_age = 100  # Fungi eventually decay
+        self.health = 1.0  # Full health initially
     
     def get_tile_symbol(self) -> str:
         """Get the display symbol for fungi."""
@@ -43,6 +45,15 @@ class Fungus(Entity):
         # Fungi might slowly grow in nutrition value when young
         if self.age < 20 and self.nutrition_value < 20:
             self.nutrition_value += 0.1
+        
+        # Suppress nearby parasites based on fungus health
+        if self.health > 0.4:  # Only healthy fungi can suppress parasites
+            nearby_parasites = environment.get_nearby_entities(self.position, entity_type='parasite', radius=2)
+            for parasite in nearby_parasites:
+                # Stronger fungi are better at suppressing parasites
+                suppression_chance = self.health * 0.3  # 30% max chance per update
+                if random.random() < suppression_chance:
+                    parasite.active = False  # Remove the parasite
     
     def can_be_consumed(self) -> bool:
         """Check if fungus can be consumed by ants.
@@ -52,15 +63,12 @@ class Fungus(Entity):
         """
         return self.nutrition_value > 5  # Minimum nutrition threshold
     
-    def consume(self) -> int:
-        """Consume the fungus and return its nutritional value.
-        
-        Returns:
-            Nutritional value of the consumed fungus
-        """
-        value = self.nutrition_value
-        self.deactivate()
-        return value
+    def consume(self, amount: float) -> float:
+        """Consume some nutrition from the fungus."""
+        consumed = min(amount, self.nutrition_value)
+        self.nutrition_value -= consumed
+        self.health = max(0.2, self.nutrition_value / 10.0)  # Health reflects nutrition
+        return consumed
     
     def is_spoiled(self) -> bool:
         """Check if fungus has spoiled due to age.
